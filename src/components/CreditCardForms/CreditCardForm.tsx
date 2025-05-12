@@ -28,7 +28,8 @@ const CreditCardForm = () => {
     const [form, setForm] = useState(initialFormState);
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setForm(prev => ({ ...prev, [name]: value }));
+        const newValue = name === 'securityCode' ? value.slice(0, 3) : value;
+        setForm(prev => ({ ...prev, [name]: newValue }));
     };
     const getIdentificationTypes = () => {
         masterService.getIdentificationTypes()
@@ -113,7 +114,7 @@ const CreditCardForm = () => {
                     <Grid size={6}>
                         <TextField
                             label="Tipo de identificación titular"
-                            name="identificationType"
+                            name="ownerIdentificationType"
                             select
                             fullWidth
                             value={form.ownerIdentificationType}

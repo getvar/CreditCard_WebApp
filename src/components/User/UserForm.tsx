@@ -33,6 +33,11 @@ const UserForm = () => {
     };
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        if (form.password.length < 6 || form.confirmPassword.length < 6) {
+            toast.warning('La contraseña debe ser de mínimo 6 caracteres');
+            return;
+        }
+
         if (form.password !== form.confirmPassword) {
             toast.warning('Las contraseñas no coinciden');
             return;
@@ -161,6 +166,12 @@ const UserForm = () => {
                             fullWidth
                             value={form.password}
                             onChange={handleChange}
+                            error={form.password.length > 0 && form.password.length < 6}
+                            helperText={
+                                form.password.length > 0 && form.password.length < 6
+                                    ? 'Debe tener mínimo 6 caracteres'
+                                    : ''
+                            }
                             required />
                     </Grid>
                     <Grid size={6}><TextField
@@ -170,6 +181,12 @@ const UserForm = () => {
                         fullWidth
                         value={form.confirmPassword}
                         onChange={handleChange}
+                        error={form.confirmPassword.length > 0 && form.confirmPassword.length < 6}
+                        helperText={
+                            form.confirmPassword.length > 0 && form.confirmPassword.length < 6
+                                ? 'Debe tener mínimo 6 caracteres'
+                                : ''
+                        }
                         required /></Grid>
                 </Grid>
                 <Box mt={3}>

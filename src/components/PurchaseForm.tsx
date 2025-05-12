@@ -34,7 +34,7 @@ const PurchaseForm = () => {
             boxSizing: 'border-box'
         }} className='box-style'>
             <Typography variant="h5" gutterBottom color="black">
-                Listado de transacciones
+                Listado de compras
             </Typography>
             <Grid container spacing={2}>
                 <Grid size={12}>
