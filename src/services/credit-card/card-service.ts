@@ -19,7 +19,7 @@ export const cardService = {
   },
 
   async deleteCard(cardId: string): Promise<ApiResponse> {
-    return await api.get(`${controllerPart}/${cardId}`);
+    return await api.delete(`${controllerPart}/${cardId}`);
   },
 };
 

@@ -4,8 +4,10 @@ export interface Product {
     name: string;
     description: string;
     price: number;
+    strPrice: string;
     imageUrl: string;
     availableQuantity: number;
+    requiredQuantity: number;
 }
 
 

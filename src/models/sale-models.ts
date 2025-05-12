@@ -24,5 +24,5 @@ export interface SaleAdd {
 
 export interface SaleDetailAdd {
     productId: string;
-    quantity: string;
+    quantity: number;
 }

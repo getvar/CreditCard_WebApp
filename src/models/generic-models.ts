@@ -6,5 +6,8 @@ export interface ApiResponse<T = any> {
 
 export interface ApiError {
     message: string;
+    errors?: {
+        [key: string]: string[];
+    };
 }
 

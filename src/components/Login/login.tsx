@@ -1,15 +1,20 @@
 import { Box, Button, TextField, Typography } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { UserLogin, UserLoginResponse } from "../../models/auth-models";
 import authService from "../../services/credit-card/auth-service";
 import { toast } from "react-toastify";
 import '../Login/Login.css';
+import { useNavigate } from "react-router-dom";
 
-const Login: React.FC = () => {
-    // Estado para los campos del formulario
+const Login = () => {
     const [userName, setUserName] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState<string | null>(null);
+    const navigate = useNavigate();
+    useEffect(() => {
+        localStorage.removeItem('userData');
+        localStorage.removeItem('creditCardToken');
+    }, []);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -31,7 +36,6 @@ const Login: React.FC = () => {
         authService.login(loginData)
             .then(res => {
                 if (res.success) {
-                    toast.success(res.message);
                     showLoginResponse(res.data);
                 } else {
                     toast.warning(res.message);
@@ -41,7 +45,11 @@ const Login: React.FC = () => {
     }
 
     const showLoginResponse = (data: UserLoginResponse) => {
-        console.log('DATOS DE RESPUESTA', data);
+        localStorage.removeItem('creditCardToken');
+        localStorage.setItem('creditCardToken', data.token);
+        localStorage.removeItem('userData');
+        localStorage.setItem('userData', JSON.stringify(data));
+        navigate('/Product');
     }
 
     return (
@@ -84,6 +92,7 @@ const Login: React.FC = () => {
                 >
                     Ingresar
                 </Button>
+                <a className="link-style" href="/UserForm">Regístrate</a>
             </form>
         </Box>
     );

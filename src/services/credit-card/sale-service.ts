@@ -5,7 +5,7 @@ import api from "../axios-util";
 const controllerPart = '/Sale';
 
 export const saleService = {
-  async addUser(sale: SaleAdd): Promise<ApiResponse> {
+  async addSale(sale: SaleAdd): Promise<ApiResponse> {
     return await api.post(controllerPart, sale);
   },
 
