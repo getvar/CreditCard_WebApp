@@ -8,6 +8,7 @@ import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Paper, Select, Ta
 import type { SaleAdd, SaleDetailAdd } from "../models/sale-models";
 import { useNavigate } from "react-router-dom";
 import saleService from "../services/credit-card/sale-service";
+import { useLoading } from "./Loading/Loading";
 
 const ShopCart = () => {
     const [productList, setProducts] = useState<Product[]>([]);
@@ -15,6 +16,7 @@ const ShopCart = () => {
     const [cardList, setCards] = useState<Card[]>([]);
     const [card, setCard] = useState('');
     const navigate = useNavigate();
+    const { setLoading } = useLoading();
 
     useEffect(() => {
         getProducts();
@@ -22,6 +24,7 @@ const ShopCart = () => {
     }, []);
 
     const getProducts = () => {
+        setLoading(true);
         productService.getProducts()
             .then(res => {
                 if (res.success) {
@@ -30,8 +33,12 @@ const ShopCart = () => {
                 } else {
                     toast.warning(res.message);
                 }
+                setLoading(false);
             })
-            .catch(err => toast.error(err.message));
+            .catch(err => {
+                toast.error(err.message);
+                setLoading(false);
+            });
     };
 
     const getCards = () => {
@@ -42,8 +49,12 @@ const ShopCart = () => {
                 } else {
                     toast.warning(res.message);
                 }
+                setLoading(false);
             })
-            .catch(err => toast.error(err.message));
+            .catch(err => {
+                toast.error(err.message);
+                setLoading(false);
+            });
     };
 
     const validateProductsShopCart = (products: Product[]) => {
@@ -97,6 +108,7 @@ const ShopCart = () => {
     };
 
     const confirmSale = (sale: SaleAdd) => {
+        setLoading(true);
         saleService.addSale(sale)
             .then(res => {
                 if (res.success) {
@@ -105,8 +117,12 @@ const ShopCart = () => {
                 } else {
                     toast.warning(res.message);
                 }
+                setLoading(false);
             })
-            .catch(err => toast.error(err.message));
+            .catch(err => {
+                toast.error(err.message);
+                setLoading(false);
+            });
     };
 
     return (

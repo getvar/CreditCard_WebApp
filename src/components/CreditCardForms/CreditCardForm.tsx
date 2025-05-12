@@ -6,11 +6,14 @@ import { toast } from "react-toastify";
 import { Box, Button, Grid, MenuItem, TextField, Typography } from "@mui/material";
 import type { Master } from "../../models/master-models";
 import masterService from "../../services/credit-card/master-service";
+import { useLoading } from "../Loading/Loading";
 
 const CreditCardForm = () => {
     const navigate = useNavigate();
     const [identificationTypes, setIdentificationTypeData] = useState<Master[]>([]);
     const [expiry, setExpiry] = useState('');
+    const { setLoading } = useLoading();
+
     useEffect(() => {
         getIdentificationTypes();
     }, []);
@@ -39,8 +42,12 @@ const CreditCardForm = () => {
                 } else {
                     toast.warning(res.message);
                 }
+                setLoading(false);
             })
-            .catch(err => toast.error(err.message));
+            .catch(err => {
+                toast.error(err.message);
+                setLoading(false);
+            });
     };
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -58,6 +65,7 @@ const CreditCardForm = () => {
         addCard(card);
     };
     const addCard = (card: CardAdd) => {
+        setLoading(true);
         cardService.addCard(card)
             .then(res => {
                 if (res.success) {
@@ -67,8 +75,12 @@ const CreditCardForm = () => {
                 } else {
                     toast.warning(res.message);
                 }
+                setLoading(false);
             })
-            .catch(err => toast.error(err.message));
+            .catch(err => {
+                toast.error(err.message);
+                setLoading(false);
+            });
     };
 
     return (

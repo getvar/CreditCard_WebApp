@@ -1,19 +1,20 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import transactionService from "../services/credit-card/transaction-service";
 import { toast } from "react-toastify";
 import { Box, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import type { Transaction } from "../models/transaction-models";
+import { useLoading } from "./Loading/Loading";
 
 const TransactionForm = () => {
     const [transactionList, setTransactions] = useState<Transaction[]>([]);
-    const navigate = useNavigate();
+    const { setLoading } = useLoading();
 
     useEffect(() => {
         getTransactions();
     }, []);
 
     const getTransactions = () => {
+        setLoading(true);
         transactionService.getTransactions()
             .then(res => {
                 if (res.success) {
@@ -21,8 +22,12 @@ const TransactionForm = () => {
                 } else {
                     toast.warning(res.message);
                 }
+                setLoading(false);
             })
-            .catch(err => toast.error(err.message));
+            .catch(err => {
+                toast.error(err.message);
+                setLoading(false);
+            });
     };
 
     return (

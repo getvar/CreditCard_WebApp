@@ -6,6 +6,7 @@ import type { Master } from "../../models/master-models";
 import type { UserManage } from "../../models/user-models";
 import userService from "../../services/credit-card/user-service";
 import { useNavigate } from 'react-router-dom';
+import { useLoading } from "../Loading/Loading";
 
 const UserForm = () => {
     const [identificationTypes, setIdentificationTypeData] = useState<Master[]>([]);
@@ -22,6 +23,7 @@ const UserForm = () => {
         confirmPassword: '',
     };
     const [form, setForm] = useState(initialFormState);
+    const { setLoading } = useLoading();
 
     useEffect(() => {
         getIdentificationTypes();
@@ -55,6 +57,7 @@ const UserForm = () => {
         addUser(user);
     };
     const getIdentificationTypes = () => {
+        setLoading(true);
         masterService.getIdentificationTypes()
             .then(res => {
                 if (res.success) {
@@ -62,10 +65,15 @@ const UserForm = () => {
                 } else {
                     toast.warning(res.message);
                 }
+                setLoading(false);
             })
-            .catch(err => toast.error(err.message));
+            .catch(err => {
+                toast.error(err.message);
+                setLoading(false);
+            });
     };
     const addUser = (user: UserManage) => {
+        setLoading(true);
         userService.addUser(user)
             .then(res => {
                 if (res.success) {
@@ -75,8 +83,12 @@ const UserForm = () => {
                 } else {
                     toast.warning(res.message);
                 }
+                setLoading(false);
             })
-            .catch(err => toast.error(err.message));
+            .catch(err => {
+                toast.error(err.message);
+                setLoading(false);
+            });
     };
 
 

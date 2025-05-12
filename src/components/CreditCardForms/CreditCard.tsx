@@ -5,16 +5,19 @@ import cardService from "../../services/credit-card/card-service";
 import { toast } from "react-toastify";
 import { Box, Button, Grid, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import { Delete } from "@mui/icons-material";
+import { useLoading } from "../Loading/Loading";
 
 const CreditCard = () => {
     const [cardList, setCards] = useState<Card[]>([]);
     const navigate = useNavigate();
-    
+    const { setLoading } = useLoading();
+
     useEffect(() => {
         getCards();
     }, []);
 
     const getCards = () => {
+        setLoading(true);
         cardService.getCards()
             .then(res => {
                 if (res.success) {
@@ -22,21 +25,30 @@ const CreditCard = () => {
                 } else {
                     toast.warning(res.message);
                 }
+                setLoading(false);
             })
-            .catch(err => toast.error(err.message));
+            .catch(err => {
+                toast.error(err.message);
+                setLoading(false);
+            });
     };
     const deleteCard = (card: Card) => {
         if (window.confirm(`¿Está seguro que desea eliminar la tardeta finalizada en: ${card.last4Digits}?`)) {
+            setLoading(true);
             cardService.deleteCard(card.id)
-            .then(res => {
-                if (res.success) {
-                    toast.success('Tarjeta eliminada con éxito');
-                    getCards();
-                } else {
-                    toast.warning(res.message);
-                }
-            })
-            .catch(err => toast.error(err.message));
+                .then(res => {
+                    if (res.success) {
+                        toast.success('Tarjeta eliminada con éxito');
+                        getCards();
+                    } else {
+                        toast.warning(res.message);
+                    }
+                    setLoading(false);
+                })
+                .catch(err => {
+                    toast.error(err.message);
+                    setLoading(false);
+                });
         }
     };
     const goAddCard = () => {

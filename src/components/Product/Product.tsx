@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import productService from "../../services/credit-card/product-service";
 import type { Product } from "../../models/product-models";
 import { toast } from "react-toastify";
 import { Box, IconButton, Card, CardContent, CardMedia, Grid, TextField, Typography, Tooltip } from "@mui/material";
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
-import type {  SaleDetailAdd } from "../../models/sale-models";
+import type { SaleDetailAdd } from "../../models/sale-models";
+import { useLoading } from "../Loading/Loading";
 
 const ProductForm = () => {
     const [productList, setProducts] = useState<Product[]>([]);
@@ -16,12 +16,15 @@ const ProductForm = () => {
             )
         );
     };
+    const { setLoading } = useLoading();
+
 
     useEffect(() => {
         getProducts();
     }, []);
 
     const getProducts = () => {
+        setLoading(true);
         productService.getProducts()
             .then(res => {
                 if (res.success) {
@@ -29,8 +32,12 @@ const ProductForm = () => {
                 } else {
                     toast.warning(res.message);
                 }
+                setLoading(false);
             })
-            .catch(err => toast.error(err.message));
+            .catch(err => {
+                toast.error(err.message);
+                setLoading(false);
+            });
     };
     const validateAddProduct = (product: Product) => {
         if (!product.requiredQuantity || product.requiredQuantity <= 0) {

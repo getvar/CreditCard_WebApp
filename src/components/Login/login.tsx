@@ -5,12 +5,14 @@ import authService from "../../services/credit-card/auth-service";
 import { toast } from "react-toastify";
 import '../Login/Login.css';
 import { useNavigate } from "react-router-dom";
+import { useLoading } from "../Loading/Loading";
 
 const Login = () => {
     const [userName, setUserName] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
+    const { setLoading } = useLoading();
     useEffect(() => {
         localStorage.removeItem('userData');
         localStorage.removeItem('creditCardToken');
@@ -33,6 +35,7 @@ const Login = () => {
     };
 
     const sendData = (loginData: UserLogin) => {
+        setLoading(true);
         authService.login(loginData)
             .then(res => {
                 if (res.success) {
@@ -40,8 +43,12 @@ const Login = () => {
                 } else {
                     toast.warning(res.message);
                 }
+                setLoading(false);
             })
-            .catch(err => toast.error(err.message));
+            .catch(err => {
+                toast.error(err.message);
+                setLoading(false);
+            });
     }
 
     const showLoginResponse = (data: UserLoginResponse) => {

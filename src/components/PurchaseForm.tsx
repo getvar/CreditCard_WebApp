@@ -1,19 +1,20 @@
-import { useNavigate } from "react-router-dom";
 import type { Sale } from "../models/sale-models";
 import { useEffect, useState } from "react";
 import saleService from "../services/credit-card/sale-service";
 import { toast } from "react-toastify";
 import { Box, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import { useLoading } from "./Loading/Loading";
 
 const PurchaseForm = () => {
     const [saleList, setSales] = useState<Sale[]>([]);
-    const navigate = useNavigate();
+    const { setLoading } = useLoading();
 
     useEffect(() => {
         getSales();
     }, []);
 
     const getSales = () => {
+        setLoading(true);
         saleService.getSales()
             .then(res => {
                 if (res.success) {
@@ -21,8 +22,12 @@ const PurchaseForm = () => {
                 } else {
                     toast.warning(res.message);
                 }
+                setLoading(false);
             })
-            .catch(err => toast.error(err.message));
+            .catch(err => {
+                toast.error(err.message);
+                setLoading(false);
+            });
     };
 
     return (
